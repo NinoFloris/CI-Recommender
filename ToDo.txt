@@ -1,0 +1,20 @@
+Bart :
+-
+
+Baudouin :
+- Clustering algorithm to apply on papers or authors (or words ?)
+
+Nino :
+- Prepared a the notebook
+
+Leon :
+-
+
+Not assigned yet :
+- Implement distance calculation (using co-author, citations, abstract)
+- create function getDistance(paper, paper)
+- create function getDistance(paper, author)
+- create function getDistance(author, author)
+    All those 3 functions have to return a number representing the distance
+
+- create function getDistance(word, word) ?
