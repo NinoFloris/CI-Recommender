@@ -1,5 +1,10 @@
 Bart :
--
+- Organize repository :
+    - one folder for report or notebook
+    - one folder for code
+    - one folder for database samples
+    - one folder for other 
+    (Just a proposition, feel free to make another clever architecture)
 
 Baudouin :
 - Clustering algorithm to apply on papers or authors (or words ?)
