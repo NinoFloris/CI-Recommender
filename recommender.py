@@ -4,9 +4,11 @@ from collections import namedtuple, defaultdict
 from itertools import groupby
 
 
-summaries_file = 'summaries.pkl.bz2'
-ids_file = 'ids.pkl.bz2'
-citations_file = 'citations.pkl.bz2'
+datasets_folder = 'datasets/'
+
+summaries_file = datasets_folder + 'summaries.pkl.bz2'
+ids_file = datasets_folder + 'ids.pkl.bz2'
+citations_file = datasets_folder + 'citations.pkl.bz2'
 
 Summaries = cPickle.load( bz2.BZ2File( summaries_file, 'rb' ) )
 
