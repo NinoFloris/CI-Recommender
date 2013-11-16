@@ -1,3 +1,21 @@
+For Tuesday 19/11
+
+Bart :
+- Look at stemming, and flask
+
+Baudouin :
+- PageRank
+- Update Notebook
+
+Nino :
+- 
+
+Leon :
+- Integrate clustering function rewrite distance function to fit
+
+
+For Thursday 15/11
+
 Bart :
 - Organize repository :
     - one folder for report or notebook
