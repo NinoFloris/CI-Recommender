@@ -10,11 +10,11 @@ import random
 
 def cluster(numOfClusters, stdSet, distFunction):
     centroids = createFirstCentroid(stdSet, numOfClusters)
-    numberOfRounds = 0
+    rounds = 0
     clusterArray = []
-    numberOfChanges = 10
-    while(numberOfChanges>2 or numberOfRounds<150):    #If there is less than 2 changes, we stop the algorithm, same thing if it is running since more than 150 loops
-        numberOfChanges = 0
+    changes = 10
+    while(changes>2 or rounds<150):    #If there is less than 2 changes, we stop the algorithm, same thing if it is running since more than 150 loops
+        changes = 0
         for i in range(stdSet.length):
             minDist = distFunction(stdSet[i], stdSet[centroids[0]])     #stdSet[i] is one element to put in a cluster
             cluster = 0
@@ -25,8 +25,8 @@ def cluster(numOfClusters, stdSet, distFunction):
                     cluster = j
             if clusterArray[i] != j :
                 clusterArray[i] = j
-                numberOfChanges += 1
-            numberOfRounds += 1
+                changes += 1
+            rounds += 1
         centroids = updatecentroids(stdSet, clusterArray, distFunction, numOfClusters)
     return clusterArray
 
