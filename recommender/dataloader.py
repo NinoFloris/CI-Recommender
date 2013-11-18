@@ -1,6 +1,7 @@
 # External imports #
 import cPickle
 import bz2
+import os
 
 
 """
@@ -12,12 +13,12 @@ import bz2
 
 
 def load(path, trybz2=True):
-    if path.exists(path):
+    if os.path.exists(path):
         try:
             return cPickle.load(open(path, 'rb'))
         except IOError:
             raise
-    elif trybz2 and path.exists(path + '.bz2'):
+    elif trybz2 and os.path.exists(path + '.bz2'):
         try:
             return cPickle.load(bz2.BZ2File(path+'.bz2', 'rb'))
         except IOError:
