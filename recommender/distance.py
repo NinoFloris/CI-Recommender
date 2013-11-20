@@ -3,6 +3,7 @@ import re
 import math
 import collections
 from itertools import groupby
+import clustering
 
 #summaries_file = 'summaries.pkl.bz2'
 #ids_file = 'ids.pkl.bz2'
