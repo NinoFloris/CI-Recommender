@@ -13,6 +13,9 @@ Nino :
 Leon :
 - Integrate clustering function rewrite distance function to fit
 
+Not assigned : 
+-  os.chdir() ? (to access databases from recommender folder)
+
 
 For Thursday 15/11
 
