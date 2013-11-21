@@ -1,10 +1,10 @@
 # External imports #
 import sys
 from time import time
-from collections import namedtuple, defaultdict
+from collections import namedtuple
 
 # Internal imports #
-from recommender import dataloader
+from recommender import dataloader, distance, config
 
 datasets_folder = 'datasets/'
 
@@ -18,6 +18,11 @@ Abstracts = dataloader.load(datasets_folder + 'abstracts.pkl')
 t1 = time()
 print 'Loaded %d tuples in %fs' % (len(Summaries) + len(IDs) + len(Citations) + len(Abstracts), t1-t0)
 
+#this way we also only load them once
+config.SUMMARIES = Summaries
+config.IDS = IDs
+config.CITATIONS = Citations
+config.ABSTRACTS = Abstracts
 
 paper = namedtuple('paper', ['title', 'authors', 'year', 'doi'])
 
@@ -29,17 +34,11 @@ while(1):  # keep asking for input until empty line
     if author_name == "":
         break
 
-    authorScores = defaultdict(int)
-
-    for(item) in Summaries:
+    for item in Summaries:
         if author_name in Summaries[item].authors:
             print 'Summary:'
             print Summaries[item]
             print 'Author number: %d' % (Summaries[item].authors.index(author_name)+1)
             print 'Abstract: %r' % Abstracts[item]
-            for author in Summaries[item].authors:
-                authorScores[author] += 1
-    for item in sorted(authorScores):
-        print 'Author: \'%s\' Score: %d' % (item, authorScores[item])
 
     print '\n'
