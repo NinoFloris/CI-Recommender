@@ -1,0 +1,61 @@
+<!doctype HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>CI PubMed Recommender - Group #2</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>
+    </head>
+    <body>
+        <header class="masthead">
+            <h1 class="masthead--header">CI PubMed Recommender -  Group #2</h1>
+        </header>
+        <main>
+            <form class="paper-searchbar" action="recommend" method="get">
+                <input name="query" class="paper-searchbar--input" type="text" placeholder="search for an author or keyword">
+                <input class="paper-searchbar--submit" value="Search" type="submit">
+            </form>
+            <h2 class="searchresults--header">Search results for "yolo".</h2>
+            <ul class="searchresults">
+                <li class="searchresults--item">
+                    Paper 1 - Author - Score - Etc.
+                </li>
+                <li class="searchresults--item">
+                    Paper 2 - Author - Score - Etc.
+                </li>
+                <li class="searchresults--item">
+                    Paper 3 - Author - Score - Etc.
+                </li>
+                <li class="searchresults--item">
+                    Paper 4 - Author - Score - Etc.
+                </li>
+                <li class="searchresults--item">
+                    Paper 5 - Author - Score - Etc.
+                </li>
+                <li class="searchresults--item">
+                    Paper 6 - Author - Score - Etc.
+                </li>
+                <li class="searchresults--item">
+                    Paper 7 - Author - Score - Etc.
+                </li>
+                <li class="searchresults--item">
+                    Paper 8 - Author - Score - Etc.
+                </li>
+                <li class="searchresults--item">
+                    Paper 9 - Author - Score - Etc.
+                </li>
+                <li class="searchresults--item">
+                    Paper 10 - Author - Score - Etc.
+                </li>
+            </ul>
+        </main>
+        <footer>
+            &copy; 2013 - Collective Intelligence Group 2 (Leon Zwart, Bart Sunter, Baudouin Duthoit, Nino Floris)
+        </footer>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+        <script src="{{ url_for('static', filename='main.min.js') }}"></script>
+    </body>
+</html>

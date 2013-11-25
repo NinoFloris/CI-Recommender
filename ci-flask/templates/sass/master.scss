@@ -1,0 +1,75 @@
+@import "../css/normalize/normalize";
+
+body {
+  font-family: "Open Sans", Arial, sans-serif;
+  font-weight: 300;
+}
+
+.masthead {
+  text-align: center;
+}
+
+.masthead--header {
+  font-weight: 300;
+}
+
+.paper-searchbar {
+  width: 720px;
+  margin: 0 auto 50px;
+  overflow: hidden;
+}
+
+.paper-searchbar--input {
+  padding: 20px;
+  width: 586px;
+  border: 1px solid #ccc;
+  float: left;
+}
+
+.paper-searchbar--submit {
+  border: none;
+  padding: 20px;
+  border: 1px solid #ccc;
+  float: right;
+  border-left: none;
+  color: #444;
+
+  &:active, &:focus {
+    box-shadow: 0 0 3px rgba(0, 0, 0, .4) inset;
+  }
+}
+
+main {
+  width: 960px;
+  margin: 0 auto;
+}
+
+.searchresults--header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.searchresults {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.searchresults--item {
+  background: rgba(100, 100, 100, .1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.searchresults--item:last-child {
+  margin-bottom: 0;
+}
+
+footer {
+  width: 920px;
+  margin: 50px auto 20px;
+  border-top: 1px solid #ccc;
+  padding: 20px;
+  text-align: center;
+  color: #aaa;
+}
