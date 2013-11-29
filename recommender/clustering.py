@@ -17,12 +17,10 @@ def cluster(numOfClusters, stdSet, distFunction):
         changes = 0
         for i in range(stdSet.length):
             minDist = distFunction(stdSet[i], stdSet[centroids[0]])     #stdSet[i] is one element to put in a cluster
-            #cluster = 0 never used
             for j in range(numOfClusters-1):
                 currentDist = distFunction(stdSet[i],stdSet[centroids[i+1]])
                 if currentDist < minDist :
                     minDist = currentDist
-                    #cluster = j
             if clusterArray[i] != j :
                 clusterArray[i] = j
                 changes += 1
