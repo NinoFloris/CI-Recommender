@@ -19,9 +19,17 @@ body {
   overflow: hidden;
 }
 
+.paper-searchbar--type {
+  padding: 19px;
+  width: 150px;
+  border: 1px solid #ccc;
+  border-right: none;
+  float: left;
+}
+
 .paper-searchbar--input {
   padding: 20px;
-  width: 586px;
+  width: 436px;
   border: 1px solid #ccc;
   float: left;
 }

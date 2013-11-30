@@ -15,7 +15,11 @@
         </header>
         <main>
             <form class="paper-searchbar" action="recommend" method="get">
-                <input name="query" class="paper-searchbar--input" type="text" placeholder="search for an author or keyword">
+                <select class="paper-searchbar--type" name="query-type" id="">
+                    <option class="paper-searchbar--type--option" value="0">keyword</option>
+                    <option class="paper-searchbar--type--option" value="1">author</option>
+                </select>
+                <input name="query" class="paper-searchbar--input" type="text" placeholder="enter your query">
                 <input class="paper-searchbar--submit" value="Search" type="submit">
             </form>
             <h2 class="searchresults--header">Search results for "yolo".</h2>
