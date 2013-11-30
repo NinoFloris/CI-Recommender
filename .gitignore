@@ -39,10 +39,12 @@ Thumbs.db
 
 # Jetbrains files #
 ###################
-.idea/workspace.xml 
+.idea/workspace.xml
 .idea/tasks.xml
 .idea/watcherTasks.xml
 
 # Misc #
 ########
 *.pkl
+
+templates/.sass-cache
