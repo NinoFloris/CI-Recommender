@@ -61,6 +61,14 @@ main {
   list-style-type: none;
   padding: 0;
   margin: 0;
+  position: relative;
+}
+
+.searchresults--loading {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  margin-left: -64px;
 }
 
 .searchresults--item {

@@ -2,6 +2,8 @@ $(document).ready(function() {
     $('.paper-searchbar--submit').on('click', function() {
         var type = $('.paper-searchbar--type').val();
         var query = $('.paper-searchbar--input').val();
+        $('.searchresults').empty();
+        $('.searchresults').append('<img class="searchresults--loading" src="/static/482.png" />');
 
         $.ajax({
             type: "post",
@@ -10,7 +12,8 @@ $(document).ready(function() {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success : function(data) {
-                alert(data.query + data.type);
+                $('.searchresults--loading').hide();
+                // laat resultaten zien
             },
             error : function(data) {
                 alert("error");
