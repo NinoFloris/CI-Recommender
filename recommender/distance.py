@@ -39,6 +39,26 @@ def getpearson(prefs,p1,p2):
 
   return r
 
+def getPapers(pID):
+    print "starting getpapers...\n"
+    abstractWords = getwords(config.ABSTRACTS[pID])    
+    titleWords = getwords(config.RAWSUMMARIES[pID][0]) #title
+    for paperID in config.RAWSUMMARIES:
+        score = wordMatch(titleWords, getwords(config.RAWSUMMARIES[paperID][0]))    # compare based on title
+	if score > 3:
+            print "\nMatch found:"
+            print config.RAWSUMMARIES[paperID][0]
+
+def termSearch(term):
+    for paperID in config.ABSTRACTS:
+        abstractWords = getwords(config.ABSTRACTS[paperID])
+        for word in abstractWords
+            if word == term
+                print "\nMatch found:"
+                print config.RAWSUMMARIES[paperID][0]
+                    
+
+    
 def getwords(doc):
     splitter = re.compile('\\W*')
     words = [s.lower() for s in splitter.split(doc)  if len(s) > 4 and len(s) < 20]
@@ -47,7 +67,14 @@ def getwords(doc):
         dict[w] = words.count(w)
     return dict
 
-def getdistances(data, v1):
+def wordMatch(w1, w2):   # get the score for matches between two dicts
+    score = 0
+    for key in w1:
+        if key in w2:        # is the word in the other dictionary?
+             score += 1 #w1[key]  #then add either 1 or word frequency in the first dict to the score (placeholder)
+    return score
+
+def getDistances(data, v1):
     distancelist=[]
     for i in range(len(data)):
         v2=data[i]
