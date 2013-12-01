@@ -28,9 +28,12 @@ for (i, paper_info) in enumerate(Summaries.values()):
 
 #this way we also only load them once
 config.SUMMARIES = SequencedSummaries
+config.RAWSUMMARIES = Summaries
 config.IDS = IDs
 config.CITATIONS = Citations
 config.ABSTRACTS = Abstracts
+
+distance.getPapers(16631912)
 
 while(1):  # keep asking for input until empty line
     author_name = raw_input("Enter author: ").decode(sys.stdin.encoding)  # unicode support
@@ -38,10 +41,11 @@ while(1):  # keep asking for input until empty line
         break
 
     for i, item in enumerate(Summaries):
-        if author_name in Summaries[item].authors:
-            print 'Summary:'
+        if author_name in Summaries[item][1]:
+            print 'Summary:\n'
+	    print item
             print Summaries[item]
-            print 'Author number: %d' % (Summaries[item].authors.index(author_name)+1)
+            print 'Author number: %d' % (Summaries[item][1].index(author_name)+1)
             print 'Abstract: %r' % Abstracts[item]
     
     print '\n'
