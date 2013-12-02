@@ -15,7 +15,7 @@ def cluster(numOfClusters, stdSet, distFunction):
     changes = 10
     while(changes>2 or rounds<150):    #If there is less than 2 changes, we stop the algorithm, same thing if it is running since more than 150 loops
         changes = 0
-        for i in range(stdSet.length):
+        for i in range(len(stdSet)):
             minDist = distFunction(stdSet[i], stdSet[centroids[0]])     #stdSet[i] is one element to put in a cluster
             for j in range(numOfClusters-1):
                 currentDist = distFunction(stdSet[i],stdSet[centroids[i+1]])
@@ -37,9 +37,13 @@ def cluster(numOfClusters, stdSet, distFunction):
 """
 
 def createFirstCentroid(stdSet,number):
-    answer = [number]
+    answer = [0]*number
     for i in range(number):
-        answer[i] = random.randint(1, stdSet.length)
+        randID = random.randint(1, len(stdSet))
+        for j in range(i):
+            if answer[j] == randID:
+                randID += 1
+        answer[i] = randID
     return answer
 
 
@@ -51,13 +55,13 @@ def createFirstCentroid(stdSet,number):
 """
 
 def updatecentroids(stdSet, clusterArray, distFunction, numOfClusters):
-    centroids[numOfClusters]
+    centroids = [0]*numOfClusters
     for i in range(numOfClusters):
         minDist = 0
         futureCentroid = -1
-        for j in range(stdSet.length):
+        for j in range(len(stdSet)):
             dist = 0
-            for k in range(stdSet.length):
+            for k in range(len(stdSet)):
                 if clusterArray[j] == clusterArray[k]:  #Only if they are in the same cluster we add the distance to the distance for this point
                     dist += distFunction(stdSet[j],stdSet[k])
             if dist < minDist or futureCentroid == -1:

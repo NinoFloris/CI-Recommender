@@ -9,20 +9,20 @@
 """
 
 def pagerank(paperSet, paperCites, minChanges=2, maxRounds=150):
-    ranks = [paperSet.length]  # Creating the answer array
+    ranks = [0]*len(paperSet)  # Creating the answer array
     changes = minChanges + 1 # Just to be sure to enter the while once
     rounds = 0
     avgRank = 1
     jumpProbability = 0.15
     while (changes<minChanges & rounds < maxRounds):
-        for i in range (paperSet.length):       # For each paper of the paperSet, we calculate a rank
+        for i in range (len(paperSet)):       # For each paper of the paperSet, we calculate a rank
             citingPaper = paperCites(paperSet[i])     #Here, we get the citation from the paper i (in the paperSet Array
             previousRank = ranks[i]
-            if (citingPaper.length == 0) :              # If there is no citations from this paper, it get only the average rank
+            if (len(citingPaper) == 0) :              # If there is no citations from this paper, it get only the average rank
                 ranks[i] = avgRank
             else :
                 ranks[i] = 0
-                for j in range(citingPaper.length):
+                for j in range(len(citingPaper)):
                     ranks[i] = ranks[citingPaper[j][0]] * citingPaper[j][1] # WARNING HERE : the citing paper needs to be an array of tuples that contains :
                                                                             # as first argument the paper ID (to retrieve the paper in the paperSet)
                                                                             # as second argument the number of citations
@@ -41,9 +41,9 @@ def pagerank(paperSet, paperCites, minChanges=2, maxRounds=150):
 
 def avgArray(foo):
     avg = 0
-    for i in range (foo.length):
+    for i in range (len(foo)):
         avg += foo[i]
-    avg /= foo.length
+    avg /= len(foo)
     return avg
 
 
