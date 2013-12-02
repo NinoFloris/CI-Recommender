@@ -45,15 +45,15 @@ def getPapers(pID):
     titleWords = getwords(config.RAWSUMMARIES[pID][0]) #title
     for paperID in config.RAWSUMMARIES:
         score = wordMatch(titleWords, getwords(config.RAWSUMMARIES[paperID][0]))    # compare based on title
-	    if score > 3:
+        if score > 3:
             print "\nMatch found:"
             print config.RAWSUMMARIES[paperID][0]
 
 def termSearch(term):
     for paperID in config.ABSTRACTS:
         abstractWords = getwords(config.ABSTRACTS[paperID])
-        for word in abstractWords
-            if word == term
+        for word in abstractWords:
+            if word == term:
                 print "\nMatch found:"
                 print config.RAWSUMMARIES[paperID][0]
 

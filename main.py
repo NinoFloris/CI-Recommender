@@ -43,7 +43,7 @@ while(1):  # keep asking for input until empty line
     for i, item in enumerate(Summaries):
         if author_name in Summaries[item][1]:
             print 'Summary:\n'
-	    print item
+            print item
             print Summaries[item]
             print 'Author number: %d' % (Summaries[item][1].index(author_name)+1)
             print 'Abstract: %r' % Abstracts[item]
