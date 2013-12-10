@@ -39,9 +39,7 @@ Thumbs.db
 
 # Jetbrains files #
 ###################
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/watcherTasks.xml
+.idea/
 
 # Misc #
 ########
