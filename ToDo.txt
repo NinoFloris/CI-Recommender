@@ -1,46 +1,17 @@
-For Tuesday 19/11
+For 13/12/2013
 
-Bart :
-- Look at stemming, and flask
+MoSCoW based
 
-Baudouin :
-- PageRank
-- Update Notebook
+Must:
+-Redo clustering, distance
+-Create independent feature algorithm
 
-Nino :
-- 
+Should:
+-Working and wired flask interface
+-Integrated features (one module's output feeds the other module's input for refinement of results)
 
-Leon :
-- Integrate clustering function rewrite distance function to fit
+Could:
+-Sphinx restructured text docstrings for autodoc
 
-Not assigned : 
--  os.chdir() ? (to access databases from recommender folder)
-
-
-For Thursday 15/11
-
-Bart :
-- Organize repository :
-    - one folder for report or notebook
-    - one folder for code
-    - one folder for database samples
-    - one folder for other 
-    (Just a proposition, feel free to make another clever architecture)
-
-Baudouin :
-- Clustering algorithm to apply on papers or authors (or words ?)
-
-Nino :
-- Prepared a the notebook
-
-Leon :
+Won't:
 -
-
-Not assigned yet :
-- Implement distance calculation (using co-author, citations, abstract)
-- create function getDistance(paper, paper)
-- create function getDistance(paper, author)
-- create function getDistance(author, author)
-    All those 3 functions have to return a number representing the distance
-
-- create function getDistance(word, word) ?
