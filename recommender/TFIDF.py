@@ -8,7 +8,7 @@ from helpers import timeRun
 import normalize
 
 def TFIDF(documents):
-    tfdict = {}    
+    tfdict = {}
     dfdict = collections.defaultdict(int)
     for pmid, document in documents.iteritems():
         words = document.split()
@@ -22,7 +22,7 @@ def TFIDF(documents):
             dfdict[word] += 1
 
     tfidfdict = {}
-    idfdict = idf(dfdict,len(documents))
+    idfdict = IDF(dfdict, len(documents))
     for pmid, tf in tfdict.iteritems():
         tfidfdict[pmid] = {term: (count * idfdict[term]) for term, count in tf}
 
@@ -38,7 +38,7 @@ def TF(wordlist):
     #return TF score per word based on the frequency of every word in tfrequency divided by tmax
     return [(f[0], float(f[1])/tmax) for f in tfrequency]
 
-def idf(dftermsdict, documentN):
+def IDF(dftermsdict, documentN):
     idfdict = {}
     for term, df in dftermsdict.iteritems():
         idfdict[term] = math.log(documentN/df, 2)
@@ -50,6 +50,15 @@ config.ABSTRACTS = cPickle.load(open("../datasets/abstracts.pkl", 'rb'))
 t1 = time()
 print 'Loaded %d tuples in %fs' % (len(config.ABSTRACTS), t1-t0)
 
-ran = timeRun(TFIDF, normalize.normalizeContent(config.ABSTRACTS,config.STOPWORDS))
-print ran[1].iteritems().next()
-print "tfed %d documents in %fs" % (len(ran[1]), ran[0])
+config.STOPWORDS = cPickle.load(open("../datasets/stopwords.pkl", 'rb'))
+
+t0 = time()
+ran = timeRun(TFIDF, normalize.normalizeContent(config.ABSTRACTS, config.STOPWORDS))
+t1 = time()
+print "tfed %d documents in %fs and normalized in %fs" % (len(ran[1]), ran[0], t1-t0-ran[0])
+raw_input()
+
+'''
+cPickle.dump(ran[1], open("../datasets/tfidfabstracts.pkl", 'wb'), cPickle.HIGHEST_PROTOCOL)
+'''
+

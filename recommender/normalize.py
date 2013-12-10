@@ -1,4 +1,5 @@
 import unicodedata
+from nltk import stem
 
 def normalizeContent(documents, stopWords=set(), normFunction=None, stripChars=''.join(c for c in map(chr, range(32,127)) if not c.isalpha()), removeDot=True):
     #setify our stopwords, just in case a list was passed, set is proportionally faster than list due to O(1) lookup
@@ -22,3 +23,7 @@ def normalizeContent(documents, stopWords=set(), normFunction=None, stripChars='
         normalized[pmid] = ''.join(word + ' 'for word in words)
 
     return normalized
+
+def lemmatization(words):
+    wnl = stem.WordNetLemmatizer()
+    return [wnl.lemmatize(word) for word in words]
