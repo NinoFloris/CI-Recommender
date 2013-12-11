@@ -4,10 +4,9 @@ from time import time
 from collections import namedtuple
 from scipy import stats
 # Internal imports #
-from recommender import dataloader, distance, config
+from recommender import dataloader, distance, config, searches
 
 datasets_folder = 'datasets/'
-
 
 print 'Loading data...'
 t0 = time()
@@ -33,9 +32,9 @@ config.IDS = IDs
 config.CITATIONS = Citations
 config.ABSTRACTS = Abstracts
 
-distance.getPapers(16631912)
+print searches.searchTermTitle("virus");
 
-while(1):  # keep asking for input until empty line
+while(0):  # keep asking for input until empty line
     author_name = raw_input("Enter author: ").decode(sys.stdin.encoding)  # unicode support
     if author_name == "":
         break
