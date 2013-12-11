@@ -1,3 +1,6 @@
+import math
+import config
+import TFIDF
 from numpy import *
 
 #abstDict = TFIDF.TFIDF(config.ABSTRACTS)
@@ -7,7 +10,7 @@ abstDict = {1 : [('la', 1), ('bo', 1), ('si', 1)],
             3: [('xz', 1), ('ry', 1), ('der', 1)],
             4: [('si', 1), ('tu', 1), ('ta', 1)]}
 
-def searchTopXterms(x, paperID):  # parameters are integers
+def searchTopXterms(x, paperID): #parameters are integers 
     results = [[]] * (x+1)
     terms = []
     for i in range(0, x):
@@ -23,10 +26,16 @@ def searchTopXterms(x, paperID):  # parameters are integers
                 print abstDict[pID][i][0]
                 print "in terms \n"
         results[count] = results[count] + [pID]
-    return results  # returns list of pID tuples. Index in list is n of matches
+    return results #returns list of pID tuples. Index in list is n of matches
 
-def searchTerm(term, depth):  # searches TFIDF dict for term matches
-   pass #placeholder 
-  
-print searchTopXterms(3, 1)
+def searchTerm(term):  # searches TFIDF dict for term matches
+    results = []
+    for pID in abstDict:
+        for item in abstDict[pID]:
+            if term in item:
+                results.append(pID)        
+    return results
+
+print searchTerm('la');
+#print searchTopXterms(3, 1)
     
