@@ -89,6 +89,14 @@ def knnEstimate(data,vec1,k=3):
         avg=avg/k
     return avg
 
+def transformDict(data):
+    result={}
+    for key in data:
+        for val in data[key]:
+            result.setdefault(val,{})
+            result[val][key] = 0.0
+    return result
+
 #deprecated, use Counter(document.split()) or TF(document.split())
 def getWords(doc):
     splitter = re.compile('\\W*')
