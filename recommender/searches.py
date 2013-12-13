@@ -8,8 +8,6 @@ abstDict = {1 : [('la', 1), ('bo', 1), ('si', 1)],
             3: [('xz', 1), ('ry', 1), ('der', 1)],
             4: [('si', 1), ('la', 3), ('ta', 1)]}
 
-Summaries = config.SUMMARIES
-
 def searchTopXterms(x, paperID): #this function recommends papers on paper input based on TFIDF output
     results = [[]] * (x+1)
     terms = []
@@ -30,21 +28,21 @@ def searchTopXterms(x, paperID): #this function recommends papers on paper input
 
 def searchTermTitle(term):  # searches Summaries for term matches
     results = []
-    for paper in config.SUMMARIES:
-        if term in paper[0]: #is term in title?
-            results.append(paper[0]);
+    for pmid, paper in config.SUMMARIES.iteritems():
+        if term in paper.title: #is term in title?
+            results.append(pmid)
     return results
 
 def searchAuthor(author):
     results = []
-    for paper in config.SUMMARIES
-        if author in paper[1]:
-            results.append(paper)
+    for pmid, paper in config.SUMMARIES.iteritems():
+        if author in paper.authors:
+            results.append(pmid)
     return results
 
 def searchTermTFIDF(term):
     results = []
-    for pID in abstDict:
+    for pID in abstDict.iterkeys():
         for item in abstDict[pID]:
             for termScore in item:
                 if term in termScore:

@@ -1,7 +1,7 @@
 import unicodedata
 from nltk import stem
 
-def normalizeContent(documents, stopWords=set(), normFunction=None, stripChars=''.join(c for c in map(chr, range(32,127)) if not c.isalpha()), removeDot=True):
+def normalizeContent(documents, stopWords=set(), normFunction=None, stripChars=''.join(c for c in map(chr, range(32,127)) if not c.isalpha()), normalizeCase=True, removeDot=True):
     #setify our stopwords, just in case a list was passed, set is proportionally faster than list due to O(1) lookup
     stopWords = set(stopWords)
     normalized = {}
@@ -12,15 +12,18 @@ def normalizeContent(documents, stopWords=set(), normFunction=None, stripChars='
         words = document.split()
         #removes all the stopwords and split-garbage, reuse list
         words[:] = [word.strip(stripChars) for word in words if word.lower() not in stopWords]
-        if(removeDot):
+        if removeDot:
             words[:] = [word.replace('.', '') for word in words]
 
+        if normalizeCase:
+            words[:] = [word.lower() for word in words]
+
         #run external normalization function on words
-        if(normFunction):
+        if normFunction:
             words = normFunction(words)
 
         #and convert it back to a string
-        normalized[pmid] = ''.join(word + ' 'for word in words)
+        normalized[pmid] = ''.join(word + ' 'for word in words)[:-1]
 
     return normalized
 

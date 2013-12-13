@@ -1,50 +1,31 @@
-# External imports #
 import sys
-from time import time
 from collections import namedtuple
-from scipy import stats
-# Internal imports #
-from recommender import dataloader, distance, config, searches
 
-datasets_folder = 'datasets/'
+from recommender import dataloader, distance, config, searches, TFIDF
 
-print 'Loading data...'
-t0 = time()
+#Start by loading in all our datasets
+dataloader.addToConfig(dataloader.loadAll("datasets/"))
+
 #Summaries is in format like ('Patterns of sex work contact among men in the general population of Switzerland, 1987-2000.', ['Jeannin A', 'Rousson V', 'Meystre-Agustoni G', 'Dubois-Arber F'], 2008, '10.1136/sti.2008.030031')
-Summaries = dataloader.load(datasets_folder + 'summaries.pkl')
-IDs = dataloader.load(datasets_folder + 'ids.pkl')
-Citations = dataloader.load(datasets_folder + 'citations.pkl')
-Abstracts = dataloader.load(datasets_folder + 'abstracts.pkl')
-Keywords = dataloader.load(datasets_folder + 'keywords.pkl')
-t1 = time()
-print 'Loaded %d tuples in %fs' % (len(Summaries) + len(IDs) + len(Citations) + len(Abstracts), t1-t0)
-
-#Create a normal 0..X counted array, we don't use the id's anyway
-SequencedSummaries = []
 paper = namedtuple('paper', ['title', 'authors', 'year', 'doi'])
-for (i, paper_info) in enumerate(Summaries.values()):
-    SequencedSummaries.append(paper(*paper_info))
+for (pmid, paper_info) in config.SUMMARIES.iteritems():
+    config.SUMMARIES[pmid] = paper( *paper_info )
 
-#this way we also only load them once
-config.SUMMARIES = SequencedSummaries
-config.RAWSUMMARIES = Summaries
-config.IDS = IDs
-config.CITATIONS = Citations
-config.ABSTRACTS = Abstracts
-
-print searches.searchTermTitle("virus");
+for (pmid, score) in TFIDF.queryTFIDF("virus", '20'):
+    print "PubmedID: %d Scored: %f" % (pmid, score)
+    print "Title: %r" % config.SUMMARIES[pmid].title
 
 while(0):  # keep asking for input until empty line
     author_name = raw_input("Enter author: ").decode(sys.stdin.encoding)  # unicode support
     if author_name == "":
         break
 
-    for i, item in enumerate(Summaries):
-        if author_name in Summaries[item][1]:
+    for i, item in enumerate(config.SUMMARIES):
+        if author_name in config.SUMMARIES[item][1]:
             print 'Summary:\n'
             print item
-            print Summaries[item]
-            print 'Author number: %d' % (Summaries[item][1].index(author_name)+1)
-            print 'Abstract: %r' % Abstracts[item]
+            print config.SUMMARIES[item]
+            print 'Author number: %d' % (config.SUMMARIES[item][1].index(author_name)+1)
+            print 'Abstract: %r' % config.ABSTRACTS[item]
     
     print '\n'

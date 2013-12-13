@@ -4,8 +4,8 @@ import inspect
 # using decorator to keep function metadata intact, this way multiple decorators with f.func_name are possible
 from external.decorator import decorator
 
-def slicedict(d, s):
-    return {k:v for k,v in d.iteritems() if k.startswith(s)}
+def sliceDict(d, s):
+    return {k:v for k,v in d.iteritems() if str(k).startswith(str(s))}
 
 def pickleObject(obj, path):
     cPickle.dump(obj, open(path, 'wb'), cPickle.HIGHEST_PROTOCOL)

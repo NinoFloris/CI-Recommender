@@ -59,5 +59,6 @@ def loadAll(folder, tryBZ2=True):
 @timeRun
 def addToConfig(nameDataDict):
     """Lazy method of mine, uses the hidden dict of any object to add the object by string name to the variable."""
-    for name, data in nameDataDict.iteritems():
-        config.__dict__[name.upper()] = data
+    if nameDataDict is not None:
+        for name, data in nameDataDict.iteritems():
+            config.__dict__[name.upper()] = data
