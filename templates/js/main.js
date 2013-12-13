@@ -12,8 +12,10 @@ $(document).ready(function() {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success : function(data) {
-                $('.searchresults--loading').hide();
-                // laat resultaten zien
+                $('.searchresults--loading').hide();    
+                $.each(data.results, function(i, item) {
+                    $('<li class="searchresultsitem"></li>').html('Pubmed ID:' + item.pmid + '<br/> Score: ' + item.score + '<br/>' + item.title).appendTo('.searchresults');
+                });
             },
             error : function(data) {
                 alert("error");
