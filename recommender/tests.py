@@ -28,5 +28,13 @@ def searchesTest():
     searches.searchTopXterms(d, 10, config.ABSTRACTS.iterkeys().next())
     print searches.searchTopXterms(3, 1)
 
+def ClusteringTest():
+    clusterPoints1 = clustering.createFirstCentroid(config.CITATIONS,5)
+    print(clusterPoints1)
+
+def dist(a,b):
+    return a+b/3
+
+
 # pickle an object #
 #cPickle.dump(pagerank.citedBy(config.CITATIONS), open("../datasets/citedby.pkl", 'wb'), cPickle.HIGHEST_PROTOCOL)

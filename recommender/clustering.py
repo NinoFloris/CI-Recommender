@@ -1,71 +1,88 @@
+import collections
 import random
 
-"""
-    This function makes cluster from data and a function that tell a distance within those data
-    The first argument gives the number of clusters we want at the end
-    The second argument are the data
-    The third one is the distance function
-    The result is an array that contain a number of cluster for each element from the second argument in the same order
-"""
+def cluster(numOfClusters, stdSet, distFunction, minChanges=10, maxRounds=150):
+    """Makes cluster from data and a function that tell a distance within those data
 
-def cluster(numOfClusters, stdSet, distFunction):
+    numOfClusters -- the number of clusters we want at the end
+    stdSet -- the dictionnary containing the data
+    distFunction -- the distance function taking as parameter 2 id
+
+    Returns -- tuple: (rounds=int, {pmid: cluster number})
+    """
+    clusters = {}
     centroids = createFirstCentroid(stdSet, numOfClusters)
     rounds = 0
-    clusterArray = []
-    changes = 10
-    while(changes>2 or rounds<150):    #If there is less than 2 changes, we stop the algorithm, same thing if it is running since more than 150 loops
+    changes = minChanges + 1
+    while(changes>minChanges and rounds<maxRounds):
+        #If there is less than 2 changes, we stop the algorithm, same thing if it is running since more than 150 loops
         changes = 0
-        for i in range(len(stdSet)):
-            minDist = distFunction(stdSet[i], stdSet[centroids[0]])     #stdSet[i] is one element to put in a cluster
+        for pmid in stdSet.iteritems():
+            #All elements are getting attributed to a cluster
+            minDist = distFunction(pmid, centroids[0])
             for j in range(numOfClusters-1):
-                currentDist = distFunction(stdSet[i],stdSet[centroids[i+1]])
+                #We try to find the closest centroid (j is the cluster number)
+                currentDist = distFunction(pmid,centroids[i+1])
                 if currentDist < minDist :
                     minDist = currentDist
-            if clusterArray[i] != j :
-                clusterArray[i] = j
-                changes += 1
+                if clusters[pmid] != j :
+                    #If the cluster number is different, we register a change
+                    clusters[pmid] = j
+                    changes += 1
             rounds += 1
-        centroids = updatecentroids(stdSet, clusterArray, distFunction, numOfClusters)
-    return clusterArray
+        centroids = updatecentroids(clusters, distFunction, numOfClusters)
+    return clusters
 
-
-"""
-    This function create the first clusters to init the recursive algorithm
-    The first argument is the set from where to randomly take the initial elements
-    The second argument is the number of elements to return
-    The result return is the ID of the cluster centroid within the stdSet
-"""
 
 def createFirstCentroid(stdSet,number):
+    """ Create the first clusters to init the recursive algorithm
+
+    stdSet -- the dictionnary
+    number -- the number of elements to return
+
+    Returns -- array [rand pmid, rand pmid, ...]
+    """
     answer = [0]*number
     for i in range(number):
-        randID = random.randint(1, len(stdSet))
-        for j in range(i):
-            if answer[j] == randID:
-                randID += 1
+        flag = True
+        while (flag):
+            # While the ID is already choosen, we loop to get a free one
+            flag = False
+            randID = random.choice(stdSet.keys())
+            if randID in answer:
+                flag = True
         answer[i] = randID
     return answer
 
 
-"""
-    This function update the clusters centroid position depending on the previous algorithm step.
-    For now it return a paper from the set which is the less far from the others
-    The first argument is the previous cluster centroids set
-    The second argument is the stdSet of papers, or author, or whatever
-"""
+#
+#   TO BE FIXED : updatecentroids
+#
 
-def updatecentroids(stdSet, clusterArray, distFunction, numOfClusters):
+def updatecentroids(cluster, distFunction, numOfClusters):
+    """ Update the clusters centroid position depending on the previous algorithm step
+
+    stdSet -- dictionnary of papers, or author, or whatever
+    cluster -- the previous cluster centroids set
+    distFunction -- the distance function taking as parameter 2 id
+    numOfClusters -- number of clusters
+
+    Returns -- array [centroid 1, centroid 2, ...]
+    """
     centroids = [0]*numOfClusters
     for i in range(numOfClusters):
         minDist = 0
         futureCentroid = -1
-        for j in range(len(stdSet)):
+        for pmid1 in cluster.iteritems():
             dist = 0
-            for k in range(len(stdSet)):
-                if clusterArray[j] == clusterArray[k]:  #Only if they are in the same cluster we add the distance to the distance for this point
-                    dist += distFunction(stdSet[j],stdSet[k])
+            for pmid2 in cluster.iteritems():
+                # Only if they are in the same cluster we add the distance to the distance for this point
+                # We calculate here the global distance between this point and all of the others of the cluster
+                if cluster[pmid1] == cluster[pmid2]:
+                    dist += distFunction(pmid1,pmid2)
             if dist < minDist or futureCentroid == -1:
+                # Change the distance if it is new or smaller than the previous one
                 minDist = dist
-                futureCentroid = j
+                futureCentroid = pmid1
         centroids[i] = futureCentroid
     return centroids

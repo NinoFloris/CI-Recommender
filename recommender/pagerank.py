@@ -20,16 +20,20 @@ def pagerank(paperCitations, paperCitedBy, minChanges=10, maxRounds=150):
 
     while (changes > minChanges and rounds < maxRounds):
         changes = 0
-        for pmid, citations in paperCitations.iteritems():       # For each paper of the paperSet, we calculate a rank
+        for pmid, citations in paperCitations.iteritems():      
+            # For each paper of the paperSet, we calculate a rank #Baudouin
             if (len(citations) > 0):
                 oldRank = ranks.setdefault(pmid, avgRank)
                 rank = 0.0
 
                 for reference in paperCitedBy[pmid]:
                     try:
+                        # Try to apply the PR formula : PR(n) / citations#(n) #Baudouin
                         rank += (ranks[reference] / len(paperCitations[reference]))
                     except KeyError:
-                        rank += avgRank / 3 # If this paper is outside the dataset use the avgRank divided by the supposed amount of cited papers.
+                        # Otherwise : default value (PR average and average outgoing citations of 3) #Baudouin
+                        # If this paper is outside the dataset use the avgRank divided by the supposed amount of cited papers. #Nino
+                        rank += avgRank / 3
 
                 ranks[pmid] = (1-jumpProbability) * rank + jumpProbability
                 if (oldRank - ranks[pmid]) > 0.01:            # To be adapted if it is too strong or too light
