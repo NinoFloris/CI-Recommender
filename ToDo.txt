@@ -3,8 +3,8 @@ For 13/12/2013
 MoSCoW based
 
 Must:
--Redo clustering, distance
--Create independent feature algorithm
+-Redo distance
+-Create independent feature algorithm (Baudouin is gonna give a try)
 
 Should:
 -Working and wired flask interface
