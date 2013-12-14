@@ -14,22 +14,30 @@ def cluster(numOfClusters, stdSet, distFunction, minChanges=10, maxRounds=150):
     centroids = createFirstCentroid(stdSet, numOfClusters)
     rounds = 0
     changes = minChanges + 1
+    firstLoop = True
     while(changes>minChanges and rounds<maxRounds):
         #If there is less than 2 changes, we stop the algorithm, same thing if it is running since more than 150 loops
         changes = 0
-        for pmid in stdSet.iteritems():
+        rounds += 1
+        print rounds
+        for pmel in stdSet.iteritems():
+            pmid = pmel[0]
             #All elements are getting attributed to a cluster
             minDist = distFunction(pmid, centroids[0])
-            for j in range(numOfClusters-1):
+            closest = 0
+            for i in range(numOfClusters-1):
                 #We try to find the closest centroid (j is the cluster number)
                 currentDist = distFunction(pmid,centroids[i+1])
                 if currentDist < minDist :
                     minDist = currentDist
-                if clusters[pmid] != j :
-                    #If the cluster number is different, we register a change
-                    clusters[pmid] = j
-                    changes += 1
-            rounds += 1
+                    closest = i+1
+            if firstLoop or clusters[pmid] != closest :
+                #If the cluster number is different, we register a change
+                clusters[pmid] = closest
+                changes += 1
+        if firstLoop:
+            # We could have done a "do {} while" instead, but i don't know if it works in python
+            firstLoop = False
         centroids = updatecentroids(clusters, distFunction, numOfClusters)
     return clusters
 
@@ -73,12 +81,12 @@ def updatecentroids(cluster, distFunction, numOfClusters):
     for i in range(numOfClusters):
         minDist = 0
         futureCentroid = -1
-        for pmid1 in cluster.iteritems():
+        for pmid1, cluster1 in cluster.iteritems():
             dist = 0
-            for pmid2 in cluster.iteritems():
+            for pmid2, cluster2 in cluster.iteritems():
                 # Only if they are in the same cluster we add the distance to the distance for this point
                 # We calculate here the global distance between this point and all of the others of the cluster
-                if cluster[pmid1] == cluster[pmid2]:
+                if cluster1 == cluster2:
                     dist += distFunction(pmid1,pmid2)
             if dist < minDist or futureCentroid == -1:
                 # Change the distance if it is new or smaller than the previous one

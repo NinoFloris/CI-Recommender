@@ -1,40 +1,42 @@
-from time import time
-
 import clustering
-import config
-import dataloader
-import distance
-import helpers
-import normalize
 import pagerank
-import searches
-import TFIDF
+import normalize
+import cPickle
+import config
+from time import time
+from helpers import timeRun
+from helpers import sliceDict
 
-#Start by loading in all our datasets
-dataloader.addToConfig(dataloader.loadAll("../datasets/"))
+""" Loading for tests """
 
-def TFIDFTest():
-    t0 = time()
-    ran = helpers.timeRun(TFIDF, normalize.normalizeContent(config.ABSTRACTS, config.STOPWORDS))
-    t1 = time()
-    print "tfed %d documents in %fs and normalized in %fs" % (len(ran[1]), ran[0], t1-t0-ran[0])
+t0 = time()
+config.ABSTRACTS = cPickle.load(open("../datasets/abstracts.pkl", 'rb'))
+config.CITATIONS = cPickle.load(open("../datasets/citations.pkl", 'rb'))
+t1 = time()
+print 'Loaded %d tuples in %fs' % (len(config.ABSTRACTS), t1-t0)
 
-def pageRankTest():
-    print pagerank.pagerank(config.CITATIONS, config.CITEDBY, 10, 150)
 
-def searchesTest():
-    # slicing the dict for the search
-    d = TFIDF.TFIDF(normalize.normalizeContent(helpers.slicedict(config.ABSTRACTS, 'A'), config.STOPWORDS))
-    searches.searchTopXterms(d, 10, config.ABSTRACTS.iterkeys().next())
-    print searches.searchTopXterms(3, 1)
+""" Clustering Tests """
 
-def ClusteringTest():
-    clusterPoints1 = clustering.createFirstCentroid(config.CITATIONS,5)
-    print(clusterPoints1)
+testDict = sliceDict(config.CITATIONS,'201')
+# print testDict
+
+clusterPoints1 = clustering.createFirstCentroid(testDict,5)
+# print(clusterPoints1)
 
 def dist(a,b):
-    return a+b/3
+    return a-b
 
+print(clustering.cluster(5, testDict, dist, 5, 10))
+# To try with a decent dist function
 
-# pickle an object #
+""" Pagerank Tests """
+
 #cPickle.dump(pagerank.citedBy(config.CITATIONS), open("../datasets/citedby.pkl", 'wb'), cPickle.HIGHEST_PROTOCOL)
+#print "Pickled citedby"
+
+# config.CITEDBY = cPickle.load(open("../datasets/citedby.pkl", 'rb'))
+
+# t = timeRun(pagerank.pagerank, config.CITATIONS, config.CITEDBY, 10, 150)
+# print 'Ran pagerank in %fs' % t[0]
+# print t[1]
