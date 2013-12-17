@@ -11,7 +11,7 @@ import searches
 import TFIDF
 
 #Start by loading in all our datasets
-dataloader.addToConfig(dataloader.loadAll("../datasets/"))
+dataloader.addToConfig(dataloader.loadAll())
 
 def TFIDFTest():
     t0 = time()
