@@ -1,6 +1,35 @@
 # Collective Intelligence Recommender
 A recommender engine that makes recommendations based on papers/authors from the PubMed database.
 
+## Naming conventions
+Variables, functions and parameters are pascalCased (not like PEP underscored)  
+Classes are CamelCased  
+Modules are lowercased unless it is an abreviation (like TFIDF)  
+Config globals are UPPERCASED  
+
+Our dataset files in "/datasets" are all subsets of "evolution" this is not mentioned in the filename.  
+Raw pickle files have the extenstion: ```.pkl```  
+BZ2 compressed pickle files have the extenstion: ```.pkl.bz2```  
+
+Our processed (cached) files in "/datasets/processed" have the same extention scheme as in "/datasets".  
+The naming scheme however is as follows:
+```
+keyName_setName_subSet
+```
+
+keyName:  
+```
+A specific key, a function name or a description about what changed the set e.g. normalized
+```
+setName:  
+```
+The name of the set, this can be an original set like abstracts or a new one like titles
+```
+subSet:  
+```
+States what subset this is (e.g. a subset of 20 means all the pubmed id's that start with 20).
+```
+
 ## Documentation
 We are using docstrings according to the PEP 257 docstring conventions.  
 
@@ -10,10 +39,10 @@ def pagerank(paperCitations, paperCitedBy, minChanges=10, maxRounds=150):
     """Calculates the pagerank for every citation of the papers we have citation data of.  
   
     Keyword arguments:  
-    paperCitations -- the dict containing all the papers and their citations  
-    paperCitedBy -- the inversed dict of paperCitations  
-    minChanges -- the minimum of changes required for the loop to continue (default 10)  
-    maxRounds -- the max rounds pagerank should do, minChanges breaks out of this loop first (default 150)  
+    paperCitations -- (dict) dictionary containing all the papers and their citations  
+    paperCitedBy -- (dict) inversed dictionary of paperCitations  
+    minChanges -- (int) minimum of changes required for the loop to continue (default 10)  
+    maxRounds -- (int) max rounds pagerank should do, minChanges breaks out of this loop first (default 150)  
   
     Returns -- tuple: (rounds=int, {pmid: pagerank})  
   
@@ -29,7 +58,7 @@ Keyword arguments:
 ```
 Each argument is formatted as below:  
 ```
-argument -- description
+argument -- (type) description
 ```
 
 The return is really code based and abstracted:  
