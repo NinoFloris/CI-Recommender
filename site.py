@@ -5,12 +5,10 @@ from collections import namedtuple
 from collections import defaultdict
 from time import time
 # Internal imports #
-from recommender import dataloader, distance, config,TFIDF
+from recommender import dataloader, distance, config, TFIDF
 
 app = Flask(__name__)
 app.debug = True
-
-datasets_folder = 'datasets/'
 
 @app.route('/')
 def index():
@@ -43,7 +41,7 @@ if __name__ == '__main__':
         Summaries[paper(*paper_info).title] = dict({author: 0.0 for author in paper(*paper_info).authors})
     Summaries = distance.transformDict(Summaries, "E")
     '''
-    dataloader.addToConfig(dataloader.loadAll("datasets/"))
+    dataloader.addToConfig(dataloader.loadAll())
 
     #Summaries is in format like ('Patterns of sex work contact among men in the general population of Switzerland, 1987-2000.', ['Jeannin A', 'Rousson V', 'Meystre-Agustoni G', 'Dubois-Arber F'], 2008, '10.1136/sti.2008.030031')
     paper = namedtuple('paper', ['title', 'authors', 'year', 'doi'])

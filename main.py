@@ -1,17 +1,17 @@
 import sys
 from collections import namedtuple
 
-from recommender import dataloader, distance, config, searches, TFIDF
+from recommender import dataloader, distance, config, searches, TFIDF, normalize
 
 #Start by loading in all our datasets
-dataloader.addToConfig(dataloader.loadAll("datasets/"))
+dataloader.addToConfig(dataloader.loadAll())
 
 #Summaries is in format like ('Patterns of sex work contact among men in the general population of Switzerland, 1987-2000.', ['Jeannin A', 'Rousson V', 'Meystre-Agustoni G', 'Dubois-Arber F'], 2008, '10.1136/sti.2008.030031')
 paper = namedtuple('paper', ['title', 'authors', 'year', 'doi'])
-for (pmid, paper_info) in config.SUMMARIES.iteritems():
-    config.SUMMARIES[pmid] = paper( *paper_info )
+for pmid, paper_info in config.SUMMARIES.iteritems():
+    config.SUMMARIES[pmid] = paper(*paper_info)
 
-for (pmid, score) in TFIDF.queryTFIDF("virus", '20'):
+for (pmid, score) in TFIDF.queryTFIDF("evolution", '20'):
     print "PubmedID: %d Scored: %f" % (pmid, score)
     print "Title: %r" % config.SUMMARIES[pmid].title
 
