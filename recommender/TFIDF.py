@@ -1,89 +1,81 @@
 import collections
 import math
 import operator
+import dataloader
 
 import config
 
-from normalize import normalizeContent
-from helpers import sliceDict, started, timeRun
+from normalize import normalizeString, normalizeDocuments, lemmatization
+from helpers import sliceDict, printStarted, printTimeRun
 
 
-@started
-@timeRun
+@printStarted
+@printTimeRun
 def queryTFIDF(query, subSet=None, topN=10):
-    abstracts = config.ABSTRACTS
+    abstracts = {}
     titles = {}
-    for (pmid, paper_info) in config.SUMMARIES.iteritems():
-            titles[pmid] = paper_info.title
+    merged = {}
 
-    if subSet:
+    titles = dataloader.loadProcessed("normalized", "titles", subSet)
+    if titles is None:
+        titles = {pmid: paper_info.title for pmid, paper_info in config.SUMMARIES.iteritems()}
         titles = sliceDict(titles, subSet)
-        abstracts = sliceDict(abstracts, subSet)
-    print "subset consists of %d elements" % len(titles)
+        titles = normalizeDocuments(titles, config.STOPWORDS, lemmatization)
+        dataloader.saveProcessed(titles, "normalized", "titles", subSet, saveBZ2=True)
 
-    #little hack, no time..
-    qwords = [normalizeContent({'q': query}, config.STOPWORDS)['q']]
+    abstracts = dataloader.loadProcessed("normalized", "abstracts", subSet)
+    if abstracts is None:
+        abstracts = sliceDict(config.ABSTRACTS, subSet)
+        abstracts = normalizeDocuments(abstracts, config.STOPWORDS, lemmatization)
+        dataloader.saveProcessed(abstracts, "normalized", "abstracts", subSet, saveBZ2=True)
 
-    #normalize
-    titles = normalizeContent(titles, config.STOPWORDS)
-    abstracts = normalizeContent(abstracts, config.STOPWORDS)
+    qwords = normalizeString(query, config.STOPWORDS, lemmatization).split()
+    print "Querying with (after normalization and query expansion): %r" % qwords
 
     #prune titles with OR search
-    remove = []
-    for pmid, title in titles.iteritems():
-        keep = False
-        for word in qwords:
-            if word in title:
-                keep = True
-        if not keep:
-            remove.append(pmid)
-    for pmid in remove:
-        del titles[pmid]
+    # remove = []
+    # for pmid, title in titles.iteritems():
+    #     keep = False
+    #     for word in qwords:
+    #         if word in title or word in abstracts[pmid]:
+    #             keep = True
+    #     if not keep:
+    #         remove.append(pmid)
+    # for pmid in remove:
+    #     del titles[pmid]
+    #     del abstracts[pmid]
 
-    #prune abstracts with OR search
-    remove = []
-    for pmid, abstract in abstracts.iteritems():
-        keep = False
-        for word in qwords:
-            if word in abstract:
-                keep = True
-        if not keep:
-            remove.append(pmid)
-    for pmid in remove:
-        del abstracts[pmid]
+    # del remove[:]
 
-    del remove[:]
+    merged = dataloader.loadProcessed("mergedTFIDF", "titles-abstracts", subSet)
+    if merged is None:
+        merged = {}
+        for pmid, doc in titles.iteritems():
+            merged[pmid] = doc + abstracts[pmid]
+        #finally run tfidf
+        merged = TFIDF(merged)
+        dataloader.saveProcessed(merged, "mergedTFIDF", "titles-abstracts", subSet, saveBZ2=True)
 
-    #finally run tfidf
-    titles = TFIDF(titles)
-    abstracts = TFIDF(abstracts)
     results = {}
-
-    for pmid, tfidfscores in titles.iteritems():
+    for pmid, tfidfscores in merged.iteritems():
         score = 0.0
-        for word in qwords:
-            for term, termscore in tfidfscores.iteritems():
+        for term, termscore in tfidfscores.iteritems():
+            for word in qwords:
                 if word in term:
                     score += termscore
         results[pmid] = score
 
-    for pmid, tfidfscores in abstracts.iteritems():
-        score = 0.0
-        for word in qwords:
-            for term, termscore in tfidfscores.iteritems():
-                if word in term:
-                    score += termscore
-        results[pmid] = score + results.setdefault(pmid, 0)
+    end = sorted(results.items(), key=operator.itemgetter(1), reverse=True)[:topN]
+    # for (pmid, score) in end:
+    #     print merged[pmid]
 
-    return sorted(results.items(), key=operator.itemgetter(1), reverse=True)[:topN]
-
-
+    return end
 
 def TFIDF(documents):
     """Calculates the TFIDF score for every document's terms.
 
     Keyword arguments:
-    documents -- the documentent dictionary {id: document}
+    documents -- (dict) documents {id: document}
 
     Returns -- dict: {id: {term: score}}
 
@@ -131,7 +123,7 @@ def IDF(dfTermsDict, documentN):
     """Calculates the IDF score for every term in the document frequency dictionary.
 
     Keyword arguments:
-    dfTermsDict -- the dictionary {term: inNdocuments} (e.g. "Space" occurred in 10 documents)
+    dfTermsDict -- (dict) document frequency {term: inNdocuments} (e.g. "Space" occurred in 10 documents)
     documentN -- the amount of documents to divide the document frequency by
 
     Returns -- dict: {term: score}
@@ -139,6 +131,6 @@ def IDF(dfTermsDict, documentN):
     """
     idfdict = {}
     for term, df in dfTermsDict.iteritems():
-        idfdict[term] = math.log(documentN/df, 2)
+        idfdict[term] = math.log(documentN/df, 10)
 
     return idfdict

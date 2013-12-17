@@ -4,7 +4,6 @@ import bz2
 # using decorator to keep function metadata intact, this way multiple decorators with f.func_name are possible
 from external.decorator import decorator
 
-
 def sliceDict(d, sliceOn, key=lambda key, value: key):
     """Slices a dict.
 
@@ -48,3 +47,26 @@ def printSetSize(f, *args):
     print '"%s" function returned %d elements' % (f.__module__ + '->' + f.__name__, len(ret))
     return ret
 
+@decorator
+def mockReturnNone(f, *args):
+    f(*args)
+
+    print '"%s" function mocked to return None' % (f.__module__ + '->' + f.__name__)
+    return None
+
+@decorator
+def memoize(f, *args, **kw):
+    if kw: # frozenset is used to ensure hashability
+        key = args, frozenset(kw.iteritems())
+    else:
+        key = args
+        cache =  f.__dict__.setdefault('cache', {}) # attributed added by memoize
+    if key in cache:
+        return cache[key]
+    else:
+        time1 = time.time()
+        result = f(*args, **kw)
+        time2 = time.time()
+        if time2 - time1 >= 1:
+            cache[key] = result
+    return result

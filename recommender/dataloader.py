@@ -3,11 +3,12 @@ import bz2
 import os
 
 import config
-from helpers import printTimeRun, printStarted, printSetSize, pickleObject
+from helpers import printTimeRun, printStarted, printSetSize, pickleObject, memoize
 
 
 @printSetSize
 @printTimeRun
+@memoize
 def load(path, unpackBZ2=True, loadBZ2=False):
     """Loads a pickled object.
     only use loadBZ2 when disk space is limited, much slower unpacked '.pkl' files.

@@ -10,6 +10,7 @@ Should:
 -Working and wired flask interface
 -Integrated features (one module's output feeds the other module's input for refinement of results)
 -Docstrings and comments for every function
+-implement query expansion (adding synonyms to the query)
 
 
 Could:
