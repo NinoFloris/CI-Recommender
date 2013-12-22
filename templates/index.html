@@ -12,13 +12,38 @@
     <body>
         <header class="masthead">
             <h1 class="masthead--header">CI PubMed Recommender -  Group #2</h1>
+            {% if gsubset %}
+                <h2 class="masthead--subset-header">PM ID subset (see config.py) is starting with: "{{ gsubset }}"</h2>
+            {% endif %}
         </header>
         <main>
             <form class="paper-searchbar" action="recommend" method="get">
-                <select class="paper-searchbar--type" name="query-type" id="">
-                    <option class="paper-searchbar--type--option" value="0">keyword</option>
-                    <option class="paper-searchbar--type--option" value="1">author</option>
-                </select>
+                <p>Searchtype:
+                    <select class="paper-searchbar--type">
+                        <option class="paper-searchbar--type--option" value="0">query</option>
+                        <option class="paper-searchbar--type--option" value="1">suggestion</option>
+                    </select>
+                </p>
+                <section class="paper-searchbar--settings">
+                    <input type="checkbox" id="paper-searchbar--settings--independent-features">
+                    <label for="paper-searchbar--settings--independent-features">Use Independent Features</label>
+                    <input type="checkbox" id="paper-searchbar--settings--pagerank">
+                    <label for="paper-searchbar--settings--pagerank">Use PageRank</label>
+                    <input type="checkbox" id="paper-searchbar--settings--tfidf">
+                    <label for="paper-searchbar--settings--tfidf">Use TF/IDF</label>
+                    <input type="checkbox" id="paper-searchbar--settings--clustering">
+                    <label for="paper-searchbar--settings--clustering">Use Clustering</label>
+                    <input type="checkbox" id="paper-searchbar--settings--recommender">
+                    <label for="paper-searchbar--settings--recommender">Use Recommender</label>
+                </section>
+                <p>Give me
+                    <select class="paper-searchbar--settings--results">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                 results.</p>
                 <input name="query" class="paper-searchbar--input" type="text" placeholder="enter your query">
                 <input class="paper-searchbar--submit" value="Search" type="submit">
             </form>
@@ -30,6 +55,6 @@
             &copy; 2013 - Collective Intelligence Group 2 (Leon Zwart, Bart Sunter, Baudouin Duthoit, Nino Floris)
         </footer>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-        <script src="{{ url_for('static', filename='main.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='main.js') }}"></script>
     </body>
 </html>

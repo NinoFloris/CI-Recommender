@@ -12,24 +12,33 @@ app.debug = True
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', gsubset=config.SUBSET)
 
 #The real deal starts here
 @app.route('/recommend', methods=['POST', 'GET'])
 def recommend():
+    # either true/false
+    useIndependentFeatures = request.json['uif']
+    usePagerank            = request.json['pagerank']
+    useTFIDF               = request.json['tfidf']
+    useClustering          = request.json['clustering']
+    useRecommender         = request.json['recommender']
+
+    # 10, 25, 50, 100
+    numResults = request.json['results']
+
+    # the query string
     query = request.json['query']
+
+    # query type (0 = query, 1 = suggestion)
     querytype = request.json['type']
 
-    tfidfresults = []
-    for (pmid, score) in TFIDF.queryTFIDF(query, '20'):
-        print "PubmedID: %d Scored: %f" % (pmid, score)
-        print "Title: %r" % config.SUMMARIES[pmid].title
-        tfidfresults.append({'pmid': pmid, 'score':score,'title':config.SUMMARIES[pmid].title})
+    # if querytype == 0:
+    #     results = query(query, config.SUBSET, useIndependentFeatures, usePagerank, useTFIDF, useClustering, useRecommender, numResults)
+    # elif querytype == 1:
+    #     results = suggest(query, config.SUBSET, useIndependentFeatures, usePagerank, useTFIDF, useClustering, useRecommender, numResults)
 
-    # do something with the query here; main recommending function
-    # results = distance.getRecommendedAuthors(config.SUMMARIES,query)
-    # return a list of recommended papers with e.g. scores and stuff
-    return jsonify(results=tfidfresults)
+    return jsonify(results=None)
 
 
 
