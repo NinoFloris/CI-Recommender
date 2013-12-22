@@ -5,8 +5,8 @@ import os
 # Set to "" for full sets
 SUBSET = "20"
 
-DATASETDIR = os.path.dirname(__file__) + "/../datasets/"
-PROCESSEDSETDIR = os.path.dirname(__file__) + "/../datasets/processed"
+DATASETDIR = os.path.dirname(os.path.abspath(__file__)) + "/../datasets/"
+PROCESSEDSETDIR = os.path.dirname(os.path.abspath(__file__)) + "/../datasets/processed"
 
 # Caching, CACHE is the overriding variable for the more specific ones, this really only applies to the processed datasets
 CACHE = True
