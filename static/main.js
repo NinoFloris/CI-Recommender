@@ -20,7 +20,7 @@ $(document).ready(function() {
             success : function(data) {
                 $('.searchresults--loading').hide();
                 $.each(data.results, function(i, item) {
-                    $('<li class="searchresultsitem"></li>').html('Pubmed ID:' + item.pmid + '<br/> Score: ' + item.score + '<br/>' + item.title).appendTo('.searchresults');
+                    $('<li class="searchresultsitem"></li>').html('Pubmed ID:' + item.pmid + '<br/> Score: ' + item.score + '<br/>' + '<strong>' + item.title + '</strong>').appendTo('.searchresults');
                 });
                 // alert("results should be displayed");
             },
