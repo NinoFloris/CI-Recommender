@@ -19,10 +19,10 @@ $(document).ready(function() {
             dataType: "json",
             success : function(data) {
                 $('.searchresults--loading').hide();
-                // $.each(data.results, function(i, item) {
-                //     $('<li class="searchresultsitem"></li>').html('Pubmed ID:' + item.pmid + '<br/> Score: ' + item.score + '<br/>' + item.title).appendTo('.searchresults');
-                // });
-                alert("results should be displayed");
+                $.each(data.results, function(i, item) {
+                    $('<li class="searchresultsitem"></li>').html('Pubmed ID:' + item.pmid + '<br/> Score: ' + item.score + '<br/>' + item.title).appendTo('.searchresults');
+                });
+                // alert("results should be displayed");
             },
             error : function(data) {
                 alert("error");

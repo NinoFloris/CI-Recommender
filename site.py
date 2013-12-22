@@ -2,13 +2,11 @@
 from flask import Flask
 from flask import render_template, request, jsonify
 from collections import namedtuple
-from collections import defaultdict
-from time import time
+
 # Internal imports #
-from recommender import dataloader, distance, config, TFIDF
+from recommender import searches, config, TFIDF, datasets
 
 app = Flask(__name__)
-app.debug = True
 
 @app.route('/')
 def index():
@@ -25,7 +23,7 @@ def recommend():
     useRecommender         = request.json['recommender']
 
     # 10, 25, 50, 100
-    numResults = request.json['results']
+    numResults = int(request.json['results'])
 
     # the query string
     query = request.json['query']
@@ -33,33 +31,21 @@ def recommend():
     # query type (0 = query, 1 = suggestion)
     querytype = request.json['type']
 
+    results = []
+    for (pmid, score) in TFIDF.queryTFIDF(query, None, config.SUBSET, True, numResults):
+        print "PubmedID: %d Scored: %f" % (pmid, score)
+        print "Title: %r" % datasets.SUMMARIES[pmid].title
+        results.append({'pmid': pmid, 'score':score,'title':datasets.SUMMARIES[pmid].title})
+
     # if querytype == 0:
     #     results = query(query, config.SUBSET, useIndependentFeatures, usePagerank, useTFIDF, useClustering, useRecommender, numResults)
     # elif querytype == 1:
     #     results = suggest(query, config.SUBSET, useIndependentFeatures, usePagerank, useTFIDF, useClustering, useRecommender, numResults)
 
-    return jsonify(results=None)
+    return jsonify(results=results)
 
 
 
 if __name__ == '__main__':
-    '''
-    #gibberjabber about turning summaries into a dict of authors with their titles
-    Summaries = defaultdict(list)
-    for paper_info in dataloader.load(datasets_folder + 'summaries.pkl').itervalues():
-        Summaries[paper(*paper_info).title] = dict({author: 0.0 for author in paper(*paper_info).authors})
-    Summaries = distance.transformDict(Summaries, "E")
-    '''
-    dataloader.addToConfig(dataloader.loadAll())
-
-    #Summaries is in format like ('Patterns of sex work contact among men in the general population of Switzerland, 1987-2000.', ['Jeannin A', 'Rousson V', 'Meystre-Agustoni G', 'Dubois-Arber F'], 2008, '10.1136/sti.2008.030031')
-    paper = namedtuple('paper', ['title', 'authors', 'year', 'doi'])
-    for (pmid, paper_info) in config.SUMMARIES.iteritems():
-        config.SUMMARIES[pmid] = paper( *paper_info )
-
-    app.run()
-
-
-
-
-
+    # use_reloader=False will have fastest loading and smallest mem footprint (reloader uses 2 processes both having all datasets loaded.)
+    app.run(debug=config.debug,use_reloader=config.use_reloader)

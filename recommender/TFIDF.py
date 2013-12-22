@@ -1,58 +1,59 @@
 import collections
 import math
 import operator
+
 import dataloader
-
-import config
-
-from normalize import normalizeString, normalizeDocuments, lemmatization
-from helpers import sliceDict, printStarted, printTimeRun
+import datasets
+import searches
+from normalize import normalizeDocuments, lemmatization
+from helpers import sliceDict, printStarted, printTimeRun, normalizeScore
 
 
 @printStarted
 @printTimeRun
-def queryTFIDF(query, subSet=None, topN=10):
+def queryTFIDF(query, pmidResultSet, subSet, independentRun=False, topN=None):
+    """Generic function to set up the datasets, and create normalized scoring (0 to 1) for a specific module technique.
+    Also used when independent running of the module technique (no preprocessing of query) is wanted. 
+    
+    Keyword arguments:
+    query -- (list/str) the processed query word list (pass a string if independentRun = True)
+    pmidResultSet -- (list) the pubmed ID resultset of the previous module technique, used for filtering
+    subSet -- (str) supply a subset (based on globalsubset please) to the function, this is also used in retrieving/saving datasets.
+    independentRun -- (bool) if a independentRun is desired this allows a string query (default False)
+    topN -- (int) return the highest N results
+
+    Returns -- sorted list: [pmid: score] of topN results (highest first).
+    
+    """
     abstracts = {}
     titles = {}
     merged = {}
 
     titles = dataloader.loadProcessed("normalized", "titles", subSet)
     if titles is None:
-        titles = {pmid: paper_info.title for pmid, paper_info in config.SUMMARIES.iteritems()}
+        print "TFIDF is generating the processed subset of SUMMARIES"
+        titles = {pmid: paper_info.title for pmid, paper_info in datasets.SUMMARIES.iteritems()}
         titles = sliceDict(titles, subSet)
-        titles = normalizeDocuments(titles, config.STOPWORDS, lemmatization)
+        titles = normalizeDocuments(titles, datasets.STOPWORDS, lemmatization)
         dataloader.saveProcessed(titles, "normalized", "titles", subSet, saveBZ2=True)
 
     abstracts = dataloader.loadProcessed("normalized", "abstracts", subSet)
     if abstracts is None:
-        abstracts = sliceDict(config.ABSTRACTS, subSet)
-        abstracts = normalizeDocuments(abstracts, config.STOPWORDS, lemmatization)
+        print "TFIDF is generating the processed subset of ABSTRACTS"
+        abstracts = sliceDict(datasets.ABSTRACTS, subSet)
+        abstracts = normalizeDocuments(abstracts, datasets.STOPWORDS, lemmatization)
         dataloader.saveProcessed(abstracts, "normalized", "abstracts", subSet, saveBZ2=True)
 
-    qwords = normalizeString(query, config.STOPWORDS, lemmatization).split()
-    print "Querying with (after normalization and query expansion): %r" % qwords
-
-    #prune titles with OR search
-    # remove = []
-    # for pmid, title in titles.iteritems():
-    #     keep = False
-    #     for word in qwords:
-    #         if word in title or word in abstracts[pmid]:
-    #             keep = True
-    #     if not keep:
-    #         remove.append(pmid)
-    # for pmid in remove:
-    #     del titles[pmid]
-    #     del abstracts[pmid]
-
-    # del remove[:]
+    if independentRun:
+        query = searches.prepareQuery(query)
+        print "Querying TFIDF with: %r" % query
 
     merged = dataloader.loadProcessed("mergedTFIDF", "titles-abstracts", subSet)
     if merged is None:
         merged = {}
         for pmid, doc in titles.iteritems():
             merged[pmid] = doc + abstracts[pmid]
-        #finally run tfidf
+        # Finally run tfidf
         merged = TFIDF(merged)
         dataloader.saveProcessed(merged, "mergedTFIDF", "titles-abstracts", subSet, saveBZ2=True)
 
@@ -60,16 +61,16 @@ def queryTFIDF(query, subSet=None, topN=10):
     for pmid, tfidfscores in merged.iteritems():
         score = 0.0
         for term, termscore in tfidfscores.iteritems():
-            for word in qwords:
-                if word in term:
+            for qword in query:
+                if qword in term:
                     score += termscore
+                    
         results[pmid] = score
 
-    end = sorted(results.items(), key=operator.itemgetter(1), reverse=True)[:topN]
-    # for (pmid, score) in end:
-    #     print merged[pmid]
+    results = sorted(results.items(), key=operator.itemgetter(1), reverse=True)[:topN]
+    normalizeScore(results)
 
-    return end
+    return results
 
 def TFIDF(documents):
     """Calculates the TFIDF score for every document's terms.
@@ -89,7 +90,7 @@ def TFIDF(documents):
             continue
 
         tfdict[pmid] = TF(words)
-        #combining this loop for some df as well
+        # Combining this loop for some df as well
         for word in set(words):
             dfdict[word] += 1
 
@@ -102,7 +103,7 @@ def TFIDF(documents):
 
 def TF(termList):
     """Calculates the TF score for every word in the given list.
-    Uses adaptive TF, every word with its normalized value for max term, TFid = (fid / maxk fkd).
+    Uses relative TF, every word with its normalized value for max term in document, TFid = (fid / maxk fkd).
     TF of word i in document d is that divided by the frequency of word k where k is the most common term in d
 
     Keyword arguments:
@@ -111,7 +112,7 @@ def TF(termList):
     Returns -- list: [(term, score)]
 
     """
-    #use counter collection to get term frequency for all terms, sort on most_common, get tmax and calculate scores
+    # Use counter collection to get term frequency for all terms, sort on most_common, get tmax and calculate scores
     tfrequency = collections.Counter(termList).most_common()
     if len(tfrequency) == 0:
         return []
