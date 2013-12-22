@@ -59,7 +59,14 @@ def normalizeScore(sortedList):
 
     returns -- sortedList with normalized scores: [(pmid, score)]
     """
-    highest = sortedList[0][1]
+    if len(sortedList) == 0:
+        return
+
+    highest = sortedList[0][1] 
+
+    if highest == 0:
+        return
+
     # not using list comprehension but updating list to preserve memory
     for i, (pmid, score) in enumerate(sortedList):
         sortedList[i] = (pmid, score/highest)
