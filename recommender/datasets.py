@@ -28,42 +28,72 @@ class _Sneaky(object):
 
     @property
     def SUMMARIES(self):
-        if self._summaries is None:
-            self._summaries = sliceDict(loadDataset('summaries'), config.SUBSET)
+        result = self._summaries
+        if result is None:
+            result = sliceDict(loadDataset('summaries'), config.SUBSET)
             paper = namedtuple('paper', ['title', 'authors', 'year', 'doi'])
-            for (pmid, paper_info) in self._summaries.iteritems():
-                self._summaries[pmid] = paper( *paper_info )
-        return self._summaries
+            for (pmid, paper_info) in result.iteritems():
+                result[pmid] = paper( *paper_info )
+
+        if config.CACHEUNPROCESSEDINRAM and config.CACHE:
+            self._summaries = result
+
+        return result
 
     @property
     def CITATIONS(self):
-        if self._citations is None:
-            self._citations = sliceDict(loadDataset('citations'), config.SUBSET)
-        return self._citations
+        result = self._citations
+        if result is None:
+            result = sliceDict(loadDataset('citations'), config.SUBSET)
+        
+        if config.CACHEUNPROCESSEDINRAM and config.CACHE:
+            self._citations = result
+
+        return result
 
     @property
     def IDS(self):
-        if self._ids is None:
-            self._ids = sliceDict(loadDataset('ids'), config.SUBSET)
-        return self._ids
+        result = self._ids
+        if result is None:
+            result = [pmid for pmid in loadDataset('ids') if str(pmid).startswith(config.SUBSET)]
+
+        if config.CACHEUNPROCESSEDINRAM and config.CACHE:
+            self._ids = result
+            
+        return result
 
     @property
     def ABSTRACTS(self):
-        if self._abstracts is None:
-            self._abstracts = sliceDict(loadDataset('abstracts'), config.SUBSET)
-        return self._abstracts
+        result = self._abstracts
+        if result is None:
+            result = sliceDict(loadDataset('abstracts'), config.SUBSET)
+        
+        if config.CACHEUNPROCESSEDINRAM and config.CACHE:
+            self._abstracts = result
+
+        return result
 
     @property
     def KEYWORDS(self):
-        if self._keywords is None:
-            self._keywords = sliceDict(loadDataset('keywords'), config.SUBSET)
-        return self._keywords
+        result = self._keywords
+        if result is None:
+            result = sliceDict(loadDataset('keywords'), config.SUBSET)
+
+        if config.CACHEUNPROCESSEDINRAM and config.CACHE:
+            self._keywords = result
+
+        return result
 
     @property
     def STOPWORDS(self):
-        if self._stopwords is None:
-            self._stopwords = loadDataset('stopwords')
-        return self._stopwords
+        result = self._stopwords
+        if result is None:
+            result = loadDataset('stopwords')
+
+        if config.CACHEUNPROCESSEDINRAM and config.CACHE:
+            self._stopwords = result
+            
+        return result
 
     def __getattr__(self, name):
         # Call module.__init__ after import introspection is done

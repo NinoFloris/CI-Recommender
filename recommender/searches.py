@@ -1,4 +1,5 @@
 import collections
+import operator
 
 import datasets
 import features
@@ -51,6 +52,6 @@ def query(query, subSet, useFeatures, usePageRank, useTFIDF, useClustering, useR
     # Return the topN results, sorted descending by score
     return sorted(endresults.items(), key=operator.itemgetter(1), reverse=True)[:topN]
 
-def recommend(query, subSet, useIndependentFeatures, usePageRank, useTFIDF, useClustering, useRecommender, topN=100):
+def suggest(query, subSet, useIndependentFeatures, usePageRank, useTFIDF, useClustering, useRecommender, topN=100):
     pass
     # requires user to select similar cluster, or do it for the user. so not taking the most similar to query but 2nd similar
