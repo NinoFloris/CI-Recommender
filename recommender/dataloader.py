@@ -111,10 +111,12 @@ def loadProcessed(keyName, setName, subSet, folder=config.PROCESSEDSETDIR, unpac
     Returns -- unpickled processed object
 
     """
-    # This could be numeric like 20 or None
-    subSet = str(subSet)
     if not subSet:
         subSet = config.SUBSET
+
+    # This could be numeric like 20 or None
+    subSet = str(subSet)
+
     obj = None
     # Example: path_to_datasets/TFIDF_abstracts_20.pkl
     fPath = folder + '/' + keyName + '_' + setName + '_' + subSet +  '.pkl'
@@ -139,10 +141,12 @@ def saveProcessed(procObj, keyName, setName, subSet, folder=config.PROCESSEDSETD
     Returns -- unpickled processed object
 
     """
-    # This could be numeric like 20 or None
-    subSet = str(subSet)
     if not subSet:
         subSet = config.SUBSET
+
+    # This could be numeric like 20 or None
+    subSet = str(subSet)
+
     # Example: path_to_datasets/TFIDF_abstracts_20.pkl
     fPath = folder.rstrip('/') + '/' + keyName + '_' + setName + '_' + subSet +  '.pkl'
     key = keyName + '_' + setName + '_' + subSet 
