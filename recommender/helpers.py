@@ -4,21 +4,7 @@ import bz2
 # using decorator to keep function metadata intact, this way multiple decorators with f.func_name are possible
 from external.decorator import decorator
 
-def sliceDict(d, sliceOn, key=lambda key, value: key):
-    """Slices a dict.
 
-    Keyword arguments:
-    d -- the dictionary to slice
-    sliceOn -- what to slice on, will be converted to string
-    key -- like the sorted() key argument, pas a lambda with arguments key value and return the element to compare with
-
-    Returns -- dict: {k: v}
-
-    """
-    if sliceOn:
-        return {k: v for k, v in d.iteritems() if str(key(k, v)).startswith(str(sliceOn))}
-
-    return d
 
 def pickleObject(obj, path, asBZ2=False):
     if asBZ2:
@@ -43,8 +29,11 @@ def printStarted(f, *args):
 @decorator
 def printSetSize(f, *args):
     ret = f(*args)
+    length = None
+    if ret is not None:
+        length = len(ret)
 
-    print '"%s" function returned %d elements' % (f.__module__ + '->' + f.__name__, len(ret))
+    print '"%s" function returned %r elements' % (f.__module__ + '->' + f.__name__, length)
     return ret
 
 @decorator
@@ -64,9 +53,52 @@ def memoize(f, *args, **kw):
     if key in cache:
         return cache[key]
     else:
-        time1 = time.time()
         result = f(*args, **kw)
-        time2 = time.time()
-        if time2 - time1 >= 1:
-            cache[key] = result
-    return result
+        cache[key] = result
+        return result
+
+@printTimeRun
+@printSetSize
+def sliceDict(d, sliceOn, key=(lambda key, value: key)):
+    """Slices a dict.
+
+    Keyword arguments:
+    d -- the dictionary to slice
+    sliceOn -- what to slice on, will be converted to string
+    key -- like the sorted() key argument, pas a lambda with arguments key value and return the element to compare with
+
+    Returns -- dict: {k: v}
+
+    """
+    if sliceOn:
+        return {k: v for k, v in d.iteritems() if str(key(k, v)).startswith(str(sliceOn))}
+
+    return d
+
+class CachedProperty(object):
+    """Lazy-loading read/write property descriptor.
+    Value is stored locally in descriptor object. If value is not set when
+    accessed, value is computed using given function. Value can be cleared
+    by calling 'del'.
+    """
+
+    def __init__(self, func):
+        self._func = func
+        self._values = {}
+        self.__name__ = func.__name__
+        self.__doc__ = func.__doc__
+
+    def __get__(self, obj, obj_class):
+        if obj is None:
+            return obj
+        if obj not in self._values or self._values[obj] is None:
+            self._values[obj] = self._func(obj)
+        return self._values[obj]
+
+    def __set__(self, obj, value):
+        self._values[obj] = value
+
+    def __delete__(self, obj):
+        if self.__name__ in obj.__dict__:
+            del obj.__dict__[self.__name__]
+        self._values[obj] = None
