@@ -3,14 +3,7 @@ import cPickle
 import bz2
 # using decorator to keep function metadata intact, this way multiple decorators with f.func_name are possible
 from external.decorator import decorator
-
-
-
-def pickleObject(obj, path, asBZ2=False):
-    if asBZ2:
-        cPickle.dump(obj, bz2.BZ2File(path, 'wb'), cPickle.HIGHEST_PROTOCOL)
-    else:
-        cPickle.dump(obj, open(path, 'wb'), cPickle.HIGHEST_PROTOCOL)
+import operator
 
 @decorator
 def printTimeRun(f, *args):
@@ -58,20 +51,41 @@ def memoize(f, *args, **kw):
         return result
 
 @printTimeRun
+def normalizeScore(sortedList):
+    """Normalizes score from 0 to 1 based on the highest score found, modifies given list.
+
+    Keyword arguments:
+    sortedList -- (list) this function accepts a sorted list with descending scores in the format [(pmid, score)]
+
+    returns -- sortedList with normalized scores: [(pmid, score)]
+    """
+    highest = sortedList[0][1]
+    # not using list comprehension but updating list to preserve memory
+    for i, (pmid, score) in enumerate(sortedList):
+        sortedList[i] = (pmid, score/highest)
+
+def pickleObject(obj, path, asBZ2=False):
+    if asBZ2:
+        cPickle.dump(obj, bz2.BZ2File(path, 'wb'), cPickle.HIGHEST_PROTOCOL)
+    else:
+        cPickle.dump(obj, open(path, 'wb'), cPickle.HIGHEST_PROTOCOL)
+
+@printTimeRun
 @printSetSize
-def sliceDict(d, sliceOn, key=(lambda key, value: key)):
+def sliceDict(d, sliceOn, key=operator.itemgetter(0)):
     """Slices a dict.
 
     Keyword arguments:
     d -- the dictionary to slice
     sliceOn -- what to slice on, will be converted to string
-    key -- like the sorted() key argument, pas a lambda with arguments key value and return the element to compare with
+    key -- like the key in sorted(), tuple input to a lambda or itemgetter return element to compare with, will be converted to string for startswith match
 
     Returns -- dict: {k: v}
 
     """
     if sliceOn:
-        return {k: v for k, v in d.iteritems() if str(key(k, v)).startswith(str(sliceOn))}
+        sliceOn = str(sliceOn)
+        return {k: v for k, v in d.iteritems() if str(key((k, v))).startswith(sliceOn)}
 
     return d
 
