@@ -38,7 +38,6 @@ def load(path, unpackBZ2=True, loadBZ2=False):
     except IOError:
         raise
 
-
 def loadDataset(setName, folder=config.DATASETDIR, unpackBZ2=True, loadBZ2=False):
     """Loads a pickled object, with setName + .pkl from folder.
     Only use loadBZ2 when disk space is limited, much slower than unpacked '.pkl' files.
@@ -97,8 +96,6 @@ def memoizedLoad(setName, folder=config.DATASETDIR, unpackBZ2=True, loadBZ2=Fals
 
     return result
 
-
-
 def loadProcessed(keyName, setName, subSet, folder=config.PROCESSEDSETDIR, unpackBZ2=True, loadBZ2=False):
     """Loads a processed object with a specific naming scheme.
     Results (if processing is longer than 1 sec) are cached through the use of the memoize decorator.
@@ -116,6 +113,8 @@ def loadProcessed(keyName, setName, subSet, folder=config.PROCESSEDSETDIR, unpac
     """
     # This could be numeric like 20 or None
     subSet = str(subSet)
+    if not subSet:
+        subSet = config.SUBSET
     obj = None
     # Example: path_to_datasets/TFIDF_abstracts_20.pkl
     fPath = folder + '/' + keyName + '_' + setName + '_' + subSet +  '.pkl'
@@ -142,6 +141,8 @@ def saveProcessed(procObj, keyName, setName, subSet, folder=config.PROCESSEDSETD
     """
     # This could be numeric like 20 or None
     subSet = str(subSet)
+    if not subSet:
+        subSet = config.SUBSET
     # Example: path_to_datasets/TFIDF_abstracts_20.pkl
     fPath = folder.rstrip('/') + '/' + keyName + '_' + setName + '_' + subSet +  '.pkl'
     key = keyName + '_' + setName + '_' + subSet 

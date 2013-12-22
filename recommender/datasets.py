@@ -1,5 +1,7 @@
 """datasets.py is dedicated to hosting non processed datasets, this includes custom sets that don't have to be processed and course material datasets."""
 import sys
+from collections import namedtuple
+
 import config
 from dataloader import loadDataset
 from helpers import sliceDict
@@ -28,6 +30,9 @@ class _Sneaky(object):
     def SUMMARIES(self):
         if self._summaries is None:
             self._summaries = sliceDict(loadDataset('summaries'), config.SUBSET)
+            paper = namedtuple('paper', ['title', 'authors', 'year', 'doi'])
+            for (pmid, paper_info) in self._summaries.iteritems():
+                self._summaries[pmid] = paper( *paper_info )
         return self._summaries
 
     @property
