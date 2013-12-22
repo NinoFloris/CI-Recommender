@@ -1,38 +1,41 @@
 import collections
 
 import datasets
+import features
+import pagerank
+import TFIDF
+import clustering
+# import recommend
+from normalize import normalizeString, lemmatization
 from helpers import sliceDict
 
-#abstDict = TFIDF.TFIDF(config.ABSTRACTS)
-abstDict = {1 : [('la', 1), ('bo', 1), ('si', 1)],
-            2: [('ra', 1), ('la', 2), ('bo', 1)],
-            3: [('xz', 1), ('ry', 1), ('der', 1)],
-            4: [('si', 1), ('la', 3), ('ta', 1)]}
+def prepareQuery(query):
+    return normalizeString(query, datasets.STOPWORDS, lemmatization).split()
 
-def query(query, subSet, useIndependentFeatures, usePageRank, useTFIDF, useClustering, useRecommender, topN=100):
+def query(query, subSet, useFeatures, usePageRank, useTFIDF, useClustering, useRecommend, topN=100):
     results = {}
     prevMethod = ''
 
-    if not useIndependentFeatures and not usePageRank and not useTFIDF and not useClustering and not useRecommender:
+    if not useFeatures and not usePageRank and not useTFIDF and not useClustering and not useRecommend:
         return None
 
     query = normalizeString(query, datasets.STOPWORDS, lemmatization).split()
     print "Querying with: %r" % query
 
-    if useIndependentFeatures:
-        results['IF'] = queryIndependentFeatures(query, results[prevMethod].keys(), subSet)
+    if useFeatures:
+        results['IF'] = features.queryFeatures(query, results[prevMethod].keys(), subSet)
         prevMethod = 'IF'
-    if usePagerank:
-        results['PR'] = queryPageRank(query, results[prevMethod].keys(), subSet)
+    if usePageRank:
+        results['PR'] = pagerank.queryPageRank(query, results[prevMethod].keys(), subSet)
         prevMethod = 'PR'
     if useTFIDF:
-        results['TI'] = queryTFIDF(query, results[prevMethod].keys(), subSet)
+        results['TI'] = TFIDF.queryTFIDF(query, results[prevMethod].keys(), subSet)
         prevMethod = 'TI'
     if useClustering:
-        results['CL'] = queryClustering(query, results[prevMethod].keys(), subSet)
+        results['CL'] = clustering.queryClustering(query, results[prevMethod].keys(), subSet)
         prevMethod = 'CL'
-    if useRecommender:
-        results['RE'] = queryRecommender(query, results[prevMethod].keys(), subSet)
+    if useRecommend:
+        results['RE'] = recommend.queryRecommend(query, results[prevMethod].keys(), subSet)
         prevMethod = 'RE'
 
     endresults = collections.defaultdict(float)
