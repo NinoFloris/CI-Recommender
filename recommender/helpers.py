@@ -51,25 +51,25 @@ def memoize(f, *args, **kw):
         return result
 
 @printTimeRun
-def normalizeScore(sortedList):
+def normalizeScore(scoreDict):
     """Normalizes score from 0 to 1 based on the highest score found, modifies given list.
 
     Keyword arguments:
-    sortedList -- (list) this function accepts a sorted list with descending scores in the format [(pmid, score)]
+    scoreDict -- (dict) this function accepts a score dict in the format {pmid: score}
 
-    returns -- sortedList with normalized scores: [(pmid, score)]
+    returns -- sortedList with normalized scores: {pmid: score}
     """
-    if len(sortedList) == 0:
+    if len(scoreDict) == 0:
         return
 
-    highest = sortedList[0][1] 
+    highest = max(scoreDict.itervalues())
 
     if highest == 0:
         return
 
-    # not using list comprehension but updating list to preserve memory
-    for i, (pmid, score) in enumerate(sortedList):
-        sortedList[i] = (pmid, score/highest)
+    # not using dict comprehension but updating dict to preserve memory
+    for pmid, score in scoreDict.iteritems():
+        scoreDict[pmid] = score/highest
 
 def pickleObject(obj, path, asBZ2=False):
     if asBZ2:

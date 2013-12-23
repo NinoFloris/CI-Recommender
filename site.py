@@ -1,9 +1,7 @@
-# External imports #
 from flask import Flask
 from flask import render_template, request, jsonify
-from collections import namedtuple
+import json
 
-# Internal imports #
 from recommender import searches, config, TFIDF, datasets
 
 app = Flask(__name__)
@@ -16,31 +14,29 @@ def index():
 @app.route('/recommend', methods=['POST', 'GET'])
 def recommend():
     # either true/false
-    useIndependentFeatures = request.json['uif']
-    usePagerank            = request.json['pagerank']
-    useTFIDF               = request.json['tfidf']
-    useClustering          = request.json['clustering']
-    useRecommender         = request.json['recommender']
-
+    useIndependentFeatures = json.loads(request.json['uif'])
+    usePagerank            = json.loads(request.json['pagerank'])
+    useTFIDF               = json.loads(request.json['tfidf'])
+    useClustering          = json.loads(request.json['clustering'])
+    useRecommender         = json.loads(request.json['recommender'])
     # 10, 25, 50, 100
     numResults = int(request.json['results'])
-
     # the query string
     query = request.json['query']
-
     # query type (0 = query, 1 = suggestion)
-    querytype = request.json['type']
+    querytype = int(request.json['type'])
 
     results = []
-    for (pmid, score) in TFIDF.queryTFIDF(query, None, config.SUBSET, True, numResults):
-        print "PubmedID: %d Scored: %f" % (pmid, score)
-        print "Title: %r" % datasets.SUMMARIES[pmid].title
-        results.append({'pmid': pmid, 'score':score,'title':datasets.SUMMARIES[pmid].title})
-
-    # if querytype == 0:
-    #     results = query(query, config.SUBSET, useIndependentFeatures, usePagerank, useTFIDF, useClustering, useRecommender, numResults)
-    # elif querytype == 1:
-    #     results = suggest(query, config.SUBSET, useIndependentFeatures, usePagerank, useTFIDF, useClustering, useRecommender, numResults)
+    if querytype == 0:
+        for (pmid, score) in searches.query(query, config.SUBSET, useIndependentFeatures, usePagerank, useTFIDF, useClustering, useRecommender, numResults):
+            print "PubmedID: %d Scored: %f" % (pmid, score)
+            print "Title: %r" % datasets.SUMMARIES[pmid].title
+            results.append({'pmid': pmid, 'score':score,'title':datasets.SUMMARIES[pmid].title})
+    elif querytype == 1:
+        for (pmid, score) in searches.suggest(query, config.SUBSET, useIndependentFeatures, usePagerank, useTFIDF, useClustering, useRecommender, numResults):
+            print "PubmedID: %d Scored: %f" % (pmid, score)
+            print "Title: %r" % datasets.SUMMARIES[pmid].title
+            results.append({'pmid': pmid, 'score':score,'title':datasets.SUMMARIES[pmid].title})
 
     return jsonify(results=results)
 

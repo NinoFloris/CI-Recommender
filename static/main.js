@@ -1,10 +1,10 @@
 $(document).ready(function() {
     $('.paper-searchbar--submit').on('click', function() {
-        var uif = $('.paper-searchbar--settings--independent-features').is(':checked');
-        var pagerank = $('.paper-searchbar--settings--independent-features').is(':checked');
-        var tfidf = $('.paper-searchbar--settings--independent-features').is(':checked');
-        var clustering = $('.paper-searchbar--settings--independent-features').is(':checked');
-        var recommender = $('.paper-searchbar--settings--independent-features').is(':checked');
+        var uif = $('#paper-searchbar--settings--independent-features').is(':checked');
+        var pagerank = $('#paper-searchbar--settings--pagerank').is(':checked');
+        var tfidf = $('#paper-searchbar--settings--tfidf').is(':checked');
+        var clustering = $('#paper-searchbar--settings--clustering').is(':checked');
+        var recommender = $('#paper-searchbar--settings--recommender').is(':checked');
         var results = $('.paper-searchbar--settings--results').val();
         var type = $('.paper-searchbar--type').val();
         var query = $('.paper-searchbar--input').val();

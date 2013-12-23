@@ -11,13 +11,12 @@ from helpers import sliceDict, printStarted, printTimeRun, normalizeScore
 
 @printStarted
 @printTimeRun
-def queryTFIDF(query, pmidResultSet, subSet, independentRun=False, topN=None):
+def queryTFIDF(query, subSet, independentRun=False, topN=None):
     """Generic function to set up the datasets, and create normalized scoring (0 to 1) for a specific module technique.
     Also used when independent running of the module technique (no preprocessing of query) is wanted. 
     
     Keyword arguments:
     query -- (list/str) the processed query word list (pass a string if independentRun = True)
-    pmidResultSet -- (list) the pubmed ID resultset of the previous module technique, used for filtering
     subSet -- (str) supply a subset (based on globalsubset please) to the function, this is also used in retrieving/saving datasets.
     independentRun -- (bool) if a independentRun is desired this allows a string query (default False)
     topN -- (int) return the highest N results
@@ -67,8 +66,10 @@ def queryTFIDF(query, pmidResultSet, subSet, independentRun=False, topN=None):
                     
         results[pmid] = score
 
-    results = sorted(results.items(), key=operator.itemgetter(1), reverse=True)[:topN]
     normalizeScore(results)
+
+    if independentRun:
+        results = sorted(results.items(), key=operator.itemgetter(1), reverse=True)[:topN]
 
     return results
 
