@@ -1,6 +1,20 @@
 # Collective Intelligence Recommender
 A recommender engine that makes recommendations based on papers/authors from the PubMed database.
 
+## Prerequisites
+* CPython 2.7.5
+* NLTK
+* WordNet corpus  
+
+```python
+    python  
+    >>>import nltk  
+    >>>nltk.download()  
+    download wordnet corpus  
+```
+* Numpy
+
+
 ## Usage
 There are 2 ways to run our project
 
@@ -8,22 +22,22 @@ There are 2 ways to run our project
 * Each module independently
 
 For the web interface run (from inside the project dir):
-```
+```python
 python site.py
 ```
 
 To use a module independently (from inside the project dir):
-```
+```python
 python
-from recommender import %modulename%
-%modulename%.query%ModuleName%(query(e.g. evolution virus),subSet(global subset + e.g 10),independentRun(True),topN(e.g. 100))
+>>>from recommender import %modulename%
+>>>%modulename%.query%ModuleName%(query(e.g. evolution virus),subSet(global subset + e.g 10),independentRun(True),topN(e.g. 100))
 ```
 
 Example:
-```
+```python
 python
 from recommender import TFIDF
-TFIDF.queryTFIDF(query(e.g. "evolution virus"),subSet(global subset + e.g "10" or None),independentRun(True),topN(e.g. 100))
+TFIDF.queryTFIDF("Example",'10',True,100)
 ```
 
 
@@ -60,7 +74,7 @@ States what subset this is (e.g. a subset of 20 means all the pubmed id's that s
 We are using docstrings according to the PEP 257 docstring conventions.  
 
 Example:  
-```
+```python
 def pageEank(paperCitations, paperCitedBy, minChanges=10, maxRounds=150):  
     """Calculates the pagerank for every citation of the papers we have citation data of.  
   
@@ -103,7 +117,7 @@ Also when you feel certain lines need extra clarification, first try to see if y
 If this is not possible please comment those lines!
 
 Example:  
-```
+```python
 #return TF score per word based on the frequency of every word in tfrequency divided by tmax  
 return [(f[0], float(f[1])/tmax) for f in tfrequency]  
 ```
